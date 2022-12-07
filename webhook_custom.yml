@@ -1,0 +1,17 @@
+---
+- name: Webhook event
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        port: 6001
+  rules:
+    - name: Webhook event
+      condition: event.payload.ping == "pong"
+      action:
+        run_playbook:
+          name: playbook_msg.yml
+          message: "This playbook was called by a webhook through ansible-events"
+    - name: Shutdown
+      condition: event.payload.shutdown is defined
+      action:
+        shutdown:
